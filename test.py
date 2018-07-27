@@ -13,7 +13,19 @@ jobs_dict = {
     '2': "Lanzar online"
 }
 
-reference = nlp_es("Quiero ejecutar el job framework-online 2 en Jenkins")
+SIMILARITY_THRESHOLD = 0.9
+
+reference1 = nlp_es("Quiero ejecutar el job framework online 2 en Jenkins")
+reference2 = nlp_es("Me gustaría compilar el job de standalone 2")
+references = []
+references.append(nlp_es("Quiero ejecutar el job framework online 2 en Jenkins"))
+references.append(nlp_es("Me gustaría compilar el job de standalone 2"))
+
+def compute_similarity(doc):
+    for reference in references:    
+        if doc.similarity(reference) > SIMILARITY_THRESHOLD:
+            return True
+    return False
 
 def load_jobs_list(filename):
     """Save the content of a csv file into a dictionaty.
@@ -34,20 +46,30 @@ def load_jobs_list(filename):
 
 def process_input(nlp, jobs_list):
     print("Bienvenido al servicio de interacción con Jenkins.")
-    text = input("Por favor, escribe qué función desear realizar: ")
+    text = input("Por favor, escribe qué función deseas realizar: ")
 
     # Feed the input text to the model
     doc = nlp(text)
 
-    # Compare the input to base sentences to know if the context is correct
-    if doc.similarity(reference) < 0.9:
+    # # Compare the input to base sentences to know if the context is correct
+    # if doc.similarity(reference1) < 0.9:
+    #     print("Lo siento, no entiendo exactamente la orden")
+    #     process_input(nlp, jobs_list)
+
+    # # Register the processed input for a job ID
+    # for token in doc:
+    #     if str(token) in jobs_list:
+    #         print("ID: {0}\nHead: {1}".format(token, token.head))
+
+    # Alternative version
+    if compute_similarity(doc):
+        print("Hola")
+        for token in doc:
+            if str(token) in jobs_list:
+                print("ID: {0}\nHead: {1}".format(token, token.head))
+    else:
         print("Lo siento, no entiendo exactamente la orden")
         process_input(nlp, jobs_list)
-
-    # Register the processed input for a job ID
-    for token in doc:
-        if str(token) in jobs_list:
-            print("ID: {0}\nHead: {1}".format(token, token.head))
 
 
 def main():
@@ -57,7 +79,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    
-    
-
