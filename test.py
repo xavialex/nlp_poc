@@ -15,13 +15,12 @@ jobs_dict = {
 
 SIMILARITY_THRESHOLD = 0.9
 
-reference1 = nlp_es("Quiero ejecutar el job framework online 2 en Jenkins")
-reference2 = nlp_es("Me gustaría compilar el job de standalone 2")
 references = []
 references.append(nlp_es("Quiero ejecutar el job framework online 2 en Jenkins"))
 references.append(nlp_es("Me gustaría compilar el job de standalone 2"))
 
 def compute_similarity(doc):
+    
     for reference in references:    
         if doc.similarity(reference) > SIMILARITY_THRESHOLD:
             return True
