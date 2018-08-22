@@ -54,7 +54,7 @@ def speech_recognition(r, audio):
     """
     try:
         # recognize speech using Google Speech Recognition
-        value = r.recognize_sphinx(audio, language='es-ES')
+        value = r.recognize_sphinx(audio)  # language='es-ES'
         print("You said {}".format(value))
         return value
     except sr.UnknownValueError:
